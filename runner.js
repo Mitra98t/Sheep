@@ -1,4 +1,5 @@
 const { Utils } = require("./utility")
+const readline = require("readline");
 
 class Runner {
     constructor(programTokens) {
@@ -48,6 +49,9 @@ class Runner {
                 case Utils.tokens.sdo:
                     this.sdoFunc(currTok, sheepVM.memory)
                     break;
+                case Utils.tokens.sdi:
+                    sheepVM.memory[currTok.args[0]] = prompt();
+                    break;
 
                 case Utils.tokens.add:
                     sheepVM.memory[currTok.args[0]] = sheepVM.memory[currTok.args[0]] + sheepVM.memory[currTok.args[1]]
@@ -71,18 +75,21 @@ class Runner {
     }
 
     transpileNums(nums) {
-        let res = []
-        for (const n of nums) {
-            let num = ""
-            if (n == "B") num += 0
+        if (typeof (nums[0]) == "string") {
+            let res = []
+            for (const n of nums) {
+                let num = ""
+                if (n == "B") num += 0
 
-            for (let i = 1; i < n.length; i++) {
-                if (n[i] == "E") num += 1
-                else if (n[i] == "e") num += 0
+                for (let i = 1; i < n.length; i++) {
+                    if (n[i] == "E") num += 1
+                    else if (n[i] == "e") num += 0
+                }
+                res.push(parseInt(num, 2))
             }
-            res.push(parseInt(num, 2))
+            return res
         }
-        return res
+        else return nums
     }
 
     cmpFunc(currTok, mem) {

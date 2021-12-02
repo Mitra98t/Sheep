@@ -170,6 +170,9 @@ class Lexer {
             case 'EEEE':
                 res.token = Utils.tokens.sdo
                 break
+            case 'eEEE':
+                res.token = Utils.tokens.sdi
+                break
 
             default:
                 break

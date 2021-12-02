@@ -22,6 +22,7 @@ class ErrorChecker {
 
             case Utils.tokens.pus:
             case Utils.tokens.pop:
+            case Utils.tokens.sdi:
                 if (lTok.args.length != 1)
                     return new Error(++lineNum, line, "Missing Arguments")
                 else

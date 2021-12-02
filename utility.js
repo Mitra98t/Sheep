@@ -10,7 +10,8 @@ const Utils = {
         pop: "POP",
         cmp: "CMP",
         cbr: "CBR",
-        sdo: "SDO"
+        sdo: "SDO",
+        sdi: "SDI",
     },
     "regex": {
         clear: /[^bBeE#]+/gm,
