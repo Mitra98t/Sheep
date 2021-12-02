@@ -3,7 +3,7 @@ const { Error } = require('./errorChecker')
 const { Lexer } = require('./lexer')
 const { Runner } = require('./runner')
 
-let lex = new Lexer("fibonacci.wool")
+let lex = new Lexer("fattoriale.wool")
 lex.parseProgram()
 if (lex.parsedProgram instanceof Error)
     console.log(lex.fancyPrint())
