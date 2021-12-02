@@ -42,7 +42,7 @@ class Runner {
                     sheepVM.flags = this.cmpFunc(currTok, sheepVM.memory)
                     break;
                 case Utils.tokens.cbr:
-                    currIdx = this.cbrFunc(currTok, sheepVM.flags, currIdx) - 1
+                    currIdx = this.cbrFunc(sheepVM.flags, currTok.args[0], currIdx, currTok.args[1]) - 1
                     break;
 
                 case Utils.tokens.sdo:
@@ -99,33 +99,35 @@ class Runner {
         return res
     }
 
-    cbrFunc(currTok, flags, currIdx) {
-        let nextInstr = -1
-        if (currTok.args[0] == 0) nextInstr = this.findInstruction(currTok.args[1])
+    cbrFunc(flags, condition, currIdx, target) {
+        let nextInstr = currIdx + 1
+        switch (condition) {
+            case 0:
+                nextInstr = this.findInstruction(target - 1)
+                break;
+            case 1:
+                if (flags.eq) nextInstr = this.findInstruction(target - 1)
+                break;
+            case 2:
+                if (!flags.eq) nextInstr = this.findInstruction(target - 1)
+                break;
+            case 3:
+                if (flags.gt) nextInstr = this.findInstruction(target - 1)
+                break;
+            case 4:
+                if (!flags.gt) nextInstr = this.findInstruction(target - 1)
+                break;
+            case 5:
+                if (flags.ge) nextInstr = this.findInstruction(target - 1)
+                break;
 
-        if (currTok.args[0] == 1)
-            if (flags.eq) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
+            case 6:
+                if (!flags.ge) nextInstr = this.findInstruction(target - 1)
+                break;
 
-        if (currTok.args[0] == 2)
-            if (!flags.eq) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
-
-        if (currTok.args[0] == 3)
-            if (flags.gt) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
-
-        if (currTok.args[0] == 4)
-            if (!flags.gt) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
-
-        if (currTok.args[0] == 5)
-            if (flags.ge) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
-
-        if (currTok.args[0] == 6)
-            if (!flags.ge) nextInstr = this.findInstruction(currTok.args[1])
-            else nextInstr = currIdx
+            default:
+                break;
+        }
 
         return nextInstr
     }
@@ -138,7 +140,11 @@ class Runner {
     }
 
     findInstruction(lineNum) {
-        return this.pTokens.findIndex((obj) => obj.lineNum = lineNum)
+        for (let i = 0; i < this.pTokens.length; i++) {
+            if (this.pTokens[i].lineNum == lineNum)
+                return i
+        }
+        return -1
     }
 }
 

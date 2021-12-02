@@ -28,8 +28,7 @@
 | bBBB        | mem1           |                        | POP  | pop from stack to mem1                  |
 | BEeE        | mem1           | mem2                   | CMP  | set flags comparing mem1 and mem2       |
 | bEeE        | compering code | line number to jump to | CBR  | jump to line number if comparation true |
-| EEEE        | mem1           |                        | SDI  | Standard input to mem1                  |
-
+| EEEE        | output type    | mem1                   | SDO  | Standard input to mem1                  |
 
 ## Instruction Set
 
@@ -65,7 +64,6 @@
 - Conditioned Branch
   - `bEeE`
 
-
 ## Rappresentazione di numeri
 
 ```
@@ -84,3 +82,12 @@
 | less equal   | 4       | 100    | BEee or B[e]+Eee |
 | grater equal | 5       | 101    | BEeE or B[e]+EeE |
 | less then    | 6       | 110    | BEEe or B[e]+EEe |
+
+## STDOut codes
+
+| code | usage           |
+| ---- | --------------- |
+| 0    | number inline   |
+| 1    | char inline     |
+| 2    | number new Line |
+| 3    | char new Line   |

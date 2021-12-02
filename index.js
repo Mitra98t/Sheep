@@ -11,4 +11,3 @@ else {
     let runner = new Runner(lex.parsedProgram)
     runner.run()
 }
-
