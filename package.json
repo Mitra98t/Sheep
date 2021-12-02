@@ -1,5 +1,34 @@
 {
+  "name": "@Mitra89UP/sheep",
+  "version": "1.0.0",
+  "description": "The beEEeeEest language you will ever see",
+  "main": "src/index.js",
+  "bin": {
+    "@Mitra98UP/sheep": "bin/sheep",
+    "sheep": "bin/sheep"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mitra98t/Sheep.git"
+  },
+  "keywords": [
+    "sheep"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mitra98t/Sheep/issues"
+  },
+  "homepage": "https://github.com/Mitra98t/Sheep#readme",
   "dependencies": {
-    "readline": "^1.3.0"
+    "arg": "^5.0.1",
+    "esm": "^3.2.25",
+    "inquirer": "^8.2.0"
   }
 }
