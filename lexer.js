@@ -1,20 +1,12 @@
 const fs = require('fs')
+const { ErrorChecker, Error } = require('./errorChecker')
+const { Utils } = require('./utility')
 
-const regex = {
-    clear: /[^bBeE#]+/gm,
-    operation: {
-        aritmetic: /^[b|B]eee|[b|B]eeE$/gm,
-        memory: /^[b|B]EEE$/gm,
-        stack: /^[b|B]BBB$/gm,
-        utility: /^[b|B]EeE$/gm,
-    }
-
-}
 
 class Lexer {
     constructor(fileName) {
         this.program = fs.readFileSync(fileName, 'utf8').split("\n")
-        this.program = this.program.map((l) => l.replace(regex.clear, ''))
+        this.program = this.program.map((l) => l.replace(Utils.regex.clear, ''))
         this.curInst = 0
         this.parsedProgram = []
     }
@@ -31,8 +23,15 @@ class Lexer {
                     this.advance()
             }
             else {
-                this.parsedProgram.push(parsedLine)
-                this.advance()
+                let er = ErrorChecker.lineCheck(parsedLine, this.curInst, this.program[this.curInst])
+                if (er == null) {
+                    this.parsedProgram.push(parsedLine)
+                    this.advance()
+                }
+                else {
+                    this.parsedProgram = er
+                    return;
+                }
             }
         } while (!endOfFile);
     }
@@ -47,35 +46,40 @@ class Lexer {
         let line = this.program[this.curInst]
         if (line == "") return { status: "empty-instruction" }
         let op = line.substring(0, 4)
-        if (op.match(regex.operation.aritmetic))
+        if (op.match(Utils.regex.operation.aritmetic))
             return this.artimeticParse()
-        if (op.match(regex.operation.memory))
+        else if (op.match(Utils.regex.operation.memory))
             return this.memoryParse()
-        if (op.match(regex.operation.stack))
+        else if (op.match(Utils.regex.operation.stack))
             return this.stackParse()
-        if (op.match(regex.operation.utility))
+        else if (op.match(Utils.regex.operation.utility))
             return this.utilityParse()
+        else if (op.match(Utils.regex.operation.stdIO))
+            return this.stdIOParse()
+        else
+            return null
     }
 
     artimeticParse() {
-        let res = { token: "", args: [] }
+        let res = { lineNum: -1, token: "", args: [] }
         let line = this.program[this.curInst]
         let op = line.substring(0, 4)
         let args = line.substr(4).split("#")
         args.shift()
         res.args = args
+        res.lineNum = this.curInst
         switch (op) {
             case 'Beee':
-                res.token = "ADD"
+                res.token = Utils.tokens.add
                 break
             case 'beee':
-                res.token = "SUB"
+                res.token = Utils.tokens.sub
                 break
             case 'BeeE':
-                res.token = "MUL"
+                res.token = Utils.tokens.mul
                 break
             case 'beeE':
-                res.token = "DIV"
+                res.token = Utils.tokens.div
                 break
 
             default:
@@ -86,18 +90,19 @@ class Lexer {
     }
 
     memoryParse() {
-        let res = { token: "", args: [] }
+        let res = { lineNum: -1, token: "", args: [] }
         let line = this.program[this.curInst]
         let op = line.substring(0, 4)
         let args = line.substr(4).split("#")
         args.shift()
         res.args = args
+        res.lineNum = this.curInst
         switch (op) {
             case 'BEEE':
-                res.token = "WMM"
+                res.token = Utils.tokens.wmm
                 break
             case 'bEEE':
-                res.token = "RMM"
+                res.token = Utils.tokens.rmm
                 break
 
             default:
@@ -108,18 +113,19 @@ class Lexer {
     }
 
     stackParse() {
-        let res = { token: "", args: [] }
+        let res = { lineNum: -1, token: "", args: [] }
         let line = this.program[this.curInst]
         let op = line.substring(0, 4)
         let args = line.substr(4).split("#")
         args.shift()
         res.args = args
+        res.lineNum = this.curInst
         switch (op) {
             case 'BBBB':
-                res.token = "PUS"
+                res.token = Utils.tokens.pus
                 break
             case 'bBBB':
-                res.token = "POP"
+                res.token = Utils.tokens.pop
                 break
 
             default:
@@ -130,21 +136,39 @@ class Lexer {
     }
 
     utilityParse() {
-        let res = { token: "", args: null }
+        let res = { lineNum: -1, token: "", args: [] }
         let line = this.program[this.curInst]
         let op = line.substring(0, 4)
         let args = line.substr(4).split("#")
         args.shift()
         res.args = args
+        res.lineNum = this.curInst
         switch (op) {
             case 'BEeE':
-                res.token = "CMP"
+                res.token = Utils.tokens.cmp
                 break
-            case 'BEeE':
-                res.token = "CBR"
+            case 'bEeE':
+                res.token = Utils.tokens.cbr
                 break
+
+            default:
+                break
+        }
+
+        return res
+    }
+
+    stdIOParse() {
+        let res = { lineNum: -1, token: "", args: [] }
+        let line = this.program[this.curInst]
+        let op = line.substring(0, 4)
+        let args = line.substr(4).split("#")
+        args.shift()
+        res.args = args
+        res.lineNum = this.curInst
+        switch (op) {
             case 'EEEE':
-                res.token = "CBR"
+                res.token = Utils.tokens.sdo
                 break
 
             default:
@@ -157,12 +181,17 @@ class Lexer {
     fancyPrint() {
         let res = ""
 
-        for (let i = 0; i < this.parsedProgram.length; i++) {
-            res += "TOKEN: " + this.parsedProgram[i].token + " | ARGS: "
-            for (let j = 0; j < this.parsedProgram[i].args.length; j++) {
-                res += this.parsedProgram[i].args[j] + ", "
+        if (this.parsedProgram instanceof Error) {
+            res += this.parsedProgram.fancyPrint()
+        }
+        else {
+            for (let i = 0; i < this.parsedProgram.length; i++) {
+                res += "LINE NUM: " + this.parsedProgram[i].lineNum + " | TOKEN: " + this.parsedProgram[i].token + " | ARGS: "
+                for (let j = 0; j < this.parsedProgram[i].args.length; j++) {
+                    res += this.parsedProgram[i].args[j] + (j == this.parsedProgram[i].args.length - 1 ? "" : ", ")
+                }
+                res += "\n"
             }
-            res += "\n"
         }
         return res
     }

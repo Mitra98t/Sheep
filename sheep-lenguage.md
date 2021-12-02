@@ -16,18 +16,19 @@
 <utility> := BEeE <number> <number> | bEeE <number> <number>
 ```
 
-| instruction | Argument1      | Argument2              | description                             |
-| ----------- | -------------- | ---------------------- | --------------------------------------- |
-| Beee        | mem1           | mem2                   | mem1 = mem1 + mem2                      |
-| beee        | mem1           | mem2                   | mem1 = mem1 - mem2                      |
-| BeeE        | mem1           | mem2                   | mem1 = mem1 * mem2                      |
-| beeE        | mem1           | mem2                   | mem1 = mem1 / mem2                      |
-| BEEE        | mem1           | num                    | mem1 = num                              |
-| bEEE        | mem1           | mem2                   | mem1 = mem2                             |
-| BBBB        | mem1           |                        | push mem1 on stack                      |
-| bBBB        | mem1           |                        | pop from stack to mem1                  |
-| BEeE        | mem1           | mem2                   | set flags comparing mem1 and mem2       |
-| bEeE        | compering code | line number to jump to | jump to line number if comparation true |
+| instruction | Argument1      | Argument2              | code | description                             |
+| ----------- | -------------- | ---------------------- | ---- | --------------------------------------- |
+| Beee        | mem1           | mem2                   | ADD  | mem1 = mem1 + mem2                      |
+| beee        | mem1           | mem2                   | SUB  | mem1 = mem1 - mem2                      |
+| BeeE        | mem1           | mem2                   | MUL  | mem1 = mem1 * mem2                      |
+| beeE        | mem1           | mem2                   | DIV  | mem1 = mem1 / mem2                      |
+| BEEE        | mem1           | num                    | WMM  | mem1 = num                              |
+| bEEE        | mem1           | mem2                   | RMM  | mem1 = mem2                             |
+| BBBB        | mem1           |                        | PUS  | push mem1 on stack                      |
+| bBBB        | mem1           |                        | POP  | pop from stack to mem1                  |
+| BEeE        | mem1           | mem2                   | CMP  | set flags comparing mem1 and mem2       |
+| bEeE        | compering code | line number to jump to | CBR  | jump to line number if comparation true |
+| EEEE        | mem1           |                        | SDI  | Standard input to mem1                  |
 
 
 ## Instruction Set
@@ -71,3 +72,15 @@
 <number> := #B<numVal>
 <numVal> := E<numVal> | e<numVal> | nil
 ```
+
+## Condition Codes
+
+| condition    | decimal | binary | sheepcode        |
+| ------------ | ------- | ------ | ---------------- |
+| nothing      | 0       | 0      | B or B[e]+       |
+| equal        | 1       | 1      | BE or B[e]+E     |
+| not equal    | 2       | 10     | BEe or B[e]+Ee   |
+| grater then  | 3       | 11     | BEE or B[e]+EE   |
+| less equal   | 4       | 100    | BEee or B[e]+Eee |
+| grater equal | 5       | 101    | BEeE or B[e]+EeE |
+| less then    | 6       | 110    | BEEe or B[e]+EEe |
