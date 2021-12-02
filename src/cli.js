@@ -26,6 +26,11 @@ function parseArgs(rawArgs) {
 export function cli(args) {
     let parsedArgs = parseArgs(args)
 
+    if (!parsedArgs.file) {
+        console.log("Missing file to run\nTry something like: sheep test.wool")
+        return
+    }
+
     if (parsedArgs.file.split('.')[1] != "wool") {
         console.log("incorrect file extention")
         return
@@ -38,5 +43,5 @@ export function cli(args) {
         let runner = new Runner(lex.parsedProgram)
         runner.run()
     }
-
+    return
 }

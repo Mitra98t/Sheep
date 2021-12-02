@@ -1,6 +1,6 @@
 {
   "name": "@mitra98/sheep",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The beEEeeEest language you will ever see",
   "main": "src/index.js",
   "bin": {

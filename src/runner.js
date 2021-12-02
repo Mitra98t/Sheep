@@ -1,5 +1,6 @@
 const { Utils } = require("./utility")
 const readline = require("readline");
+const { exit } = require("process");
 
 
 class Runner {
@@ -79,6 +80,7 @@ class Runner {
             }
             currIdx++
         }
+        exit(0)
     }
 
     transpileNums(nums) {
