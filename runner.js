@@ -1,9 +1,14 @@
 const { Utils } = require("./utility")
 const readline = require("readline");
 
+
 class Runner {
     constructor(programTokens) {
         this.pTokens = programTokens
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
     }
 
     run() {
@@ -50,7 +55,9 @@ class Runner {
                     this.sdoFunc(currTok, sheepVM.memory)
                     break;
                 case Utils.tokens.sdi:
-                    sheepVM.memory[currTok.args[0]] = prompt();
+                    this.rl.question("", ans => {
+                        sheepVM.memory[currTok.args[0]] = (ans)
+                    })
                     break;
 
                 case Utils.tokens.add:
