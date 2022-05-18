@@ -149,9 +149,9 @@ class Runner {
     }
 
     sdoFunc(currTok, mem) {
-        if (currTok.args[0] == 0) process.stdout.write(mem[currTok.args[1]])
+        if (currTok.args[0] == 0) process.stdout.write(""+mem[currTok.args[1]])
         else if (currTok.args[0] == 1) process.stdout.write(String.fromCharCode(mem[currTok.args[1]]))
-        else if (currTok.args[0] == 2) process.stdout.write(mem[currTok.args[1]] + "\n")
+        else if (currTok.args[0] == 2) process.stdout.write(""+mem[currTok.args[1]] + "\n")
         else if (currTok.args[0] == 3) process.stdout.write(String.fromCharCode(mem[currTok.args[1]]) + "\n")
     }
 

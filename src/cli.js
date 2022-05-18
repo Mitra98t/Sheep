@@ -27,7 +27,7 @@ export function cli(args) {
     let parsedArgs = parseArgs(args)
 
     if (!parsedArgs.file) {
-        console.log("Missing file to run\nTry something like: sheep test.wool")
+        console.log("Missing file to run\nTry something like: sheep test.wool AIO")
         return
     }
 
